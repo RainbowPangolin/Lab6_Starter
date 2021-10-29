@@ -25,6 +25,9 @@ async function init() {
     return;
   };
   // Add the first three recipe cards to the page
+  console.log(recipeData)
+  console.log("recipeData")
+
   createRecipeCards();
   // Make the "Show more" button functional
   bindShowMore();
@@ -34,10 +37,24 @@ async function fetchRecipes() {
   return new Promise((resolve, reject) => {
     // This function is called for you up above
     // From this function, you are going to fetch each of the recipes in the 'recipes' array above.
+    console.log("call fetchRecipes");
     // Once you have that data, store it in the 'recipeData' object. You can use whatever you like
     // for the keys. Once everything in the array has been successfully fetched, call the resolve(true)
     // callback function to resolve this promise. If there's any error fetching any of the items, call
     // the reject(false) function.
+
+    console.log("call fetchRecipes loop");
+    for(let i = 0; i < recipes.length; i++){
+      //console.log(recipes[i].slice(34, -5))
+      recipeData[recipes[i].slice(34, -5)] = fetch(recipes[i])
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .then(bee => {
+        console.log(bee);
+      } );
+    }
+
+    //resolve(true);
 
     // For part 2 - note that you can fetch local files as well, so store any JSON files you'd like to fetch
     // in the recipes folder and fetch them from there. You'll need to add their paths to the recipes array.
@@ -52,6 +69,12 @@ function createRecipeCards() {
   // files with the recipeData Object above. Make sure you only display the 
   // three recipes we give you, you'll use the bindShowMore() function to
   // show any others you've added when the user clicks on the "Show more" button.
+
+  // for (const property in object) {
+  //   console.log(`${property}: ${object[property]}`);
+  //     //element.data = recipeData[???];
+  // }
+
 
   // Part 1 Expose - TODO
 }
