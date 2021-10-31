@@ -25,9 +25,9 @@ async function init() {
     return;
   };
   // Add the first three recipe cards to the page
-  console.log(recipeData)
-  console.log("recipeData")
-
+  //console.log(recipeData)
+  //console.log("recipeData")
+  
   createRecipeCards();
   // Make the "Show more" button functional
   bindShowMore();
@@ -37,21 +37,26 @@ async function fetchRecipes() {
   return new Promise((resolve, reject) => {
     // This function is called for you up above
     // From this function, you are going to fetch each of the recipes in the 'recipes' array above.
-    console.log("call fetchRecipes");
     // Once you have that data, store it in the 'recipeData' object. You can use whatever you like
     // for the keys. Once everything in the array has been successfully fetched, call the resolve(true)
     // callback function to resolve this promise. If there's any error fetching any of the items, call
     // the reject(false) function.
-
-    console.log("call fetchRecipes loop");
     for(let i = 0; i < recipes.length; i++){
       //console.log(recipes[i].slice(34, -5))
       recipeData[recipes[i].slice(34, -5)] = fetch(recipes[i])
       .then(response => response.json())
       .then(data => console.log(data))
-      .then(bee => {
-        console.log(bee);
-      } );
+      .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        reject(false);
+      });
+    }
+
+    if (Object.keys(recipeData).length == recipes.length) {
+      resolve(true);
+    }
+    else{
+      reject(false);
     }
 
     //resolve(true);
@@ -70,12 +75,13 @@ function createRecipeCards() {
   // three recipes we give you, you'll use the bindShowMore() function to
   // show any others you've added when the user clicks on the "Show more" button.
 
-  // for (const property in object) {
-  //   console.log(`${property}: ${object[property]}`);
-  //     //element.data = recipeData[???];
-  // }
-
-
+  for (const data in recipeData) {
+      //console.log(`${data}: ${recipeData[data]}`);
+    const newCard = document.createElement("recipe-card");
+    newCard.data = data;
+    const mainElement = document.getElementsByTagName("main")[0];
+    mainElement.appendChild(newCard);
+  }
   // Part 1 Expose - TODO
 }
 
