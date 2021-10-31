@@ -17,15 +17,34 @@ window.addEventListener('DOMContentLoaded', init);
 
 // This is the first function to be called, so when you are tracing your code start here.
 async function init() {
+  
+  //recipeData[recipes[0]] = fetch(recipes[0]).then(response => response.json());
+
+  // //console.log("recipeData " + recipeData[recipes[0]]);
+
   // fetch the recipes and wait for them to load
   let fetchSuccessful = await fetchRecipes();
+
+  setTimeout(() => {console.log( "after fetchrecipes " + Object.keys(recipeData).length)}, 600);
+  for(let i = 0; i < recipes.length; i++){
+    setTimeout(() => {console.log(recipeData[recipes[i]])}, 600);
+  }
+  
+
   // if they didn't successfully load, quit the function
   if (!fetchSuccessful) {
     console.log('Recipe fetch unsuccessful');
     return;
   };
   // Add the first three recipe cards to the page
-  //console.log(recipeData)
+
+  //Debug for seeing recipeData fetched
+  console.log(recipeData)
+  //setTimeout(() => {console.log(JSON.stringify(recipeData[recipes[0]]))}, 500);
+  //await console.log(JSON.stringify(recipeData[recipes[0]]));
+  console.log("recipeData " + recipeData);
+
+
   //console.log("recipeData")
   
   createRecipeCards();
@@ -41,25 +60,36 @@ async function fetchRecipes() {
     // for the keys. Once everything in the array has been successfully fetched, call the resolve(true)
     // callback function to resolve this promise. If there's any error fetching any of the items, call
     // the reject(false) function.
+    let fetchGood;
     for(let i = 0; i < recipes.length; i++){
       //console.log(recipes[i].slice(34, -5))
-      recipeData[recipes[i].slice(34, -5)] = fetch(recipes[i])
+      //recipeData[recipes[i]] = 
+      fetch(recipes[i])
       .then(response => response.json())
-      .then(data => console.log(data))
+      .then(response => {
+        //console.log(jsondata);
+        recipeData[recipes[i]] = response;
+      })
+      .then( response => {
+        if ((i == recipes.length - 1) && (Object.keys(recipeData).length == recipes.length)) {
+          resolve(true);
+        }
+        else if (i == recipes.length){
+          //console.log(Object.keys(recipeData));
+          reject(false);
+        }
+        
+      })
       .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
         reject(false);
       });
     }
 
-    if (Object.keys(recipeData).length == recipes.length) {
-      resolve(true);
-    }
-    else{
-      reject(false);
-    }
 
-    //resolve(true);
+    
+
+
 
     // For part 2 - note that you can fetch local files as well, so store any JSON files you'd like to fetch
     // in the recipes folder and fetch them from there. You'll need to add their paths to the recipes array.

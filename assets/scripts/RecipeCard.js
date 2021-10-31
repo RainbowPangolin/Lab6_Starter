@@ -94,7 +94,8 @@ class RecipeCard extends HTMLElement {
 
     //Create img
     let image = document.createElement('img');
-    image.src = data.image;
+    console.log( "search for key " +  data  +  " " + searchForKey(data, totalTime)) ;
+    image.src = searchForKey(data, image);
     card.appendChild(image);
 
     //create p with class = "title"
