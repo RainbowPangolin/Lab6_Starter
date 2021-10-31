@@ -25,7 +25,10 @@ async function init() {
     return;
   };
   // Add the first three recipe cards to the page
-  //console.log(recipeData)
+  console.log(recipeData[recipes[0]])
+  console.log(recipeData[recipes[1]])
+  console.log(recipeData[recipes[2]])
+
   //console.log("recipeData")
   
   createRecipeCards();
@@ -41,31 +44,43 @@ async function fetchRecipes() {
     // for the keys. Once everything in the array has been successfully fetched, call the resolve(true)
     // callback function to resolve this promise. If there's any error fetching any of the items, call
     // the reject(false) function.
+
+    //Get each
     for(let i = 0; i < recipes.length; i++){
+
+      //recipes.map use promises.all
+
       //console.log(recipes[i].slice(34, -5))
-      recipeData[recipes[i].slice(34, -5)] = fetch(recipes[i])
-      .then(response => response.json())
-      .then(data => console.log(data))
+      fetch(recipes[i])
+      //.then(response => response.json())
+      .then(data => {
+        recipeData[recipes[i]] = data.json();
+      })
+      // .then( data => { //check if recipesData is filled correctly
+      //   if(i == recipes.length - 1){
+      //     if (Object.keys(recipeData).length == recipes.length) {
+      //       resolve(true);
+      //     }
+      //     else{
+      //       console.error('There has been a problem with your fetch operation (else state):', data);
+      //       reject(false);
+      //     } 
+      //   }
+      // }) 
       .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
         reject(false);
       });
-    }
 
-    if (Object.keys(recipeData).length == recipes.length) {
-      resolve(true);
+      if (Object.keys(recipeData).length == recipes.length) {
+        resolve(true);
+      }
+      
     }
-    else{
-      reject(false);
-    }
-
-    //resolve(true);
 
     // For part 2 - note that you can fetch local files as well, so store any JSON files you'd like to fetch
     // in the recipes folder and fetch them from there. You'll need to add their paths to the recipes array.
-
-    // Part 1 Expose - TODO
-  });
+  })
 }
 
 function createRecipeCards() {
@@ -75,13 +90,23 @@ function createRecipeCards() {
   // three recipes we give you, you'll use the bindShowMore() function to
   // show any others you've added when the user clicks on the "Show more" button.
 
-  for (const data in recipeData) {
-      //console.log(`${data}: ${recipeData[data]}`);
+  for (const key in recipeData) {
+    //console.log(`${key}: ${recipeData[key]}`);
     const newCard = document.createElement("recipe-card");
-    newCard.data = data;
+    newCard.data = recipeData[key];
     const mainElement = document.getElementsByTagName("main")[0];
     mainElement.appendChild(newCard);
   }
+
+//   for (let key in recipeData) {
+//     if (recipeData.hasOwnProperty(key)) {
+//         console.log(key + " -> " + recipeData[key]);
+//         const newCard = document.createElement("recipe-card");
+//         newCard.data = recipeData[key];
+//         const mainElement = document.getElementsByTagName("main")[0];
+//         mainElement.appendChild(newCard);
+//     }
+// }
   // Part 1 Expose - TODO
 }
 
