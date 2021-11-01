@@ -19,21 +19,26 @@ window.addEventListener('DOMContentLoaded', init);
 async function init() {
   // fetch the recipes and wait for them to load
   let fetchSuccessful = await fetchRecipes();
+
+  //console.log(recipeData[recipes[2]])
+
   // if they didn't successfully load, quit the function
   if (!fetchSuccessful) {
     console.log('Recipe fetch unsuccessful');
     return;
   };
   // Add the first three recipe cards to the page
-  //console.log(recipeData)
+  //console.log(recipeData[recipes[0]].image)
   //console.log("recipeData")
   
+  //console.log(recipeData);
   createRecipeCards();
   // Make the "Show more" button functional
   bindShowMore();
 }
 
 async function fetchRecipes() {
+
   return new Promise((resolve, reject) => {
     // This function is called for you up above
     // From this function, you are going to fetch each of the recipes in the 'recipes' array above.
@@ -41,23 +46,23 @@ async function fetchRecipes() {
     // for the keys. Once everything in the array has been successfully fetched, call the resolve(true)
     // callback function to resolve this promise. If there's any error fetching any of the items, call
     // the reject(false) function.
+    
     for(let i = 0; i < recipes.length; i++){
-      //console.log(recipes[i].slice(34, -5))
-      recipeData[recipes[i].slice(34, -5)] = fetch(recipes[i])
+      fetch(recipes[i])
       .then(response => response.json())
-      .then(data => console.log(data))
+      .then(data => {
+        recipeData[recipes[i]] = data;
+      })
+      .then( data => {
+          if(recipes.length == Object.keys(recipeData).length){
+          resolve(true);
+        }})
       .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
-        reject(false);
       });
     }
 
-    if (Object.keys(recipeData).length == recipes.length) {
-      resolve(true);
-    }
-    else{
-      reject(false);
-    }
+
 
     //resolve(true);
 
@@ -75,10 +80,12 @@ function createRecipeCards() {
   // three recipes we give you, you'll use the bindShowMore() function to
   // show any others you've added when the user clicks on the "Show more" button.
 
-  for (const data in recipeData) {
+  for (const key in recipeData) {
       //console.log(`${data}: ${recipeData[data]}`);
     const newCard = document.createElement("recipe-card");
-    newCard.data = data;
+    //console.log("recipeData key: " + JSON.stringify(recipeData[key]));
+    //console.log(recipeData[key])
+    newCard.data = recipeData[key];
     const mainElement = document.getElementsByTagName("main")[0];
     mainElement.appendChild(newCard);
   }
