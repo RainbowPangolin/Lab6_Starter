@@ -1,11 +1,15 @@
 class RecipeCard extends HTMLElement {
   constructor() {
     // Part 1 Expose - TODO
-
+    super();
+    const shadow = this.attachShadow({mode: 'open'});
     // You'll want to attach the shadow DOM here
   }
 
   set data(data) {
+
+    console.log(Object.keys(data))
+
     // This is the CSS that you'll use for your recipe cards
     const styleElem = document.createElement('style');
     const styles = `
@@ -88,6 +92,78 @@ class RecipeCard extends HTMLElement {
     // Here's the root element that you'll want to attach all of your other elements to
     const card = document.createElement('article');
 
+    this.shadowRoot.appendChild(card);
+    this.shadowRoot.appendChild(styleElem);
+
+    //Create img
+    let image = document.createElement('img');
+    //console.log(data)
+    //console.log("create img " + searchForKey(data, image));
+    //console.log("what is data " + JSON.stringify(data.thumbnailUrl));
+    image.src = searchForKey(data, "thumbnailUrl");
+    //console.log(searchForKey(data, "image"))
+    card.appendChild(image);
+
+    //create p with class = "title"
+      //create a href
+    let title = document.createElement('p');
+    title.classList.add("title");
+    let titleLink = document.createElement('a');
+    let link = document.createTextNode(searchForKey(data, "headline"));
+    titleLink.appendChild(link);
+    title.appendChild(titleLink);
+    titleLink.href = getUrl(data);
+    card.appendChild(title);
+
+    
+    // create p with calss organization
+
+    let org = document.createElement('p');
+    org.classList.add("organization");
+    org.textContent = getOrganization(data);
+    card.appendChild(org);
+
+    console.log(searchForKey(data, "aggregateRating"))
+    //if exists-rating: create div with class rating
+    let rating = document.createElement('div');
+    rating.classList.add("rating");
+      if(searchForKey(data, "aggregateRating") != undefined){
+        //create span average review
+        //create img of avg review score
+        //create span of total num of reviews
+        let avgRev = document.createElement('span');
+        avgRev.textContent = searchForKey(data, "ratingValue");
+        let stars = document.createElement('img');
+        stars.src = "assets/images/icons/5-star.svg";
+        stars.alt = "5 stars";
+        let numRev = document.createElement('span');
+        numRev.textContent = "(" + searchForKey(data, "ratingCount") + ")";
+        rating.appendChild(avgRev);
+        rating.appendChild(stars);
+        rating.appendChild(numRev);
+      }
+      else{
+        let noRev = document.createElement('span');
+        noRev.textContent = "No reviews";
+        rating.appendChild(noRev);
+      }
+    card.appendChild(rating);
+
+      //create time 
+    let time = document.createElement('time');
+    time.textContent = convertTime(searchForKey(data, "totalTime"));
+    card.appendChild(time);
+
+  
+    
+    //create p class of ingredients in a cs-list
+    let ingredients = document.createElement('p');
+    console.log(searchForKey(data, "recipeIngredient"));
+    ingredients.textContent = createIngredientList(searchForKey(data, "recipeIngredient"));
+    ingredients.classList.add("ingredients")
+    card.appendChild(ingredients);
+
+
     // Some functions that will be helpful here:
     //    document.createElement()
     //    document.querySelector()
@@ -99,7 +175,6 @@ class RecipeCard extends HTMLElement {
     // Make sure to attach your root element and styles to the shadow DOM you
     // created in the constructor()
 
-    // Part 1 Expose - TODO
   }
 }
 
