@@ -132,10 +132,11 @@ class RecipeCard extends HTMLElement {
         //create img of avg review score
         //create span of total num of reviews
         let avgRev = document.createElement('span');
-        avgRev.textContent = searchForKey(data, "ratingValue");
+        let roundedStars= Math.round(searchForKey(data, "ratingValue"));
+        avgRev.textContent = roundedStars;
         let stars = document.createElement('img');
-        stars.src = "assets/images/icons/5-star.svg";
-        stars.alt = "5 stars";
+        stars.src = "assets/images/icons/" + roundedStars +  "-star.svg";
+        stars.alt = "" + roundedStars + " stars";
         let numRev = document.createElement('span');
         numRev.textContent = "(" + searchForKey(data, "ratingCount") + ")";
         rating.appendChild(avgRev);
